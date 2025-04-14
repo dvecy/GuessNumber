@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="gradient-overlay"></div>
+    <div class="gradient-background"></div>
     <div class="noise-overlay"></div>
 
     <div class="game-container">
@@ -18,18 +18,16 @@
         <header class="game-header">
             <h1>Guess My Number!</h1>
             <p class="between">(Between 1 and 20)</p>
-            <div class="number-box">
-                <div class="number">?</div>
-            </div>
+            <div class="number-display">?</div>
         </header>
 
         <main class="game-main">
-            <section class="game-panel game-panel--left">
+            <section class="game-controls">
                 <input type="number" class="guess-input" min="1" max="20" autofocus />
                 <button class="btn btn--check">Check!</button>
             </section>
 
-            <section class="game-panel game-panel--right">
+            <section class="game-info">
                 <p class="message">Start guessing...</p>
                 <p class="label-score">💯 Score: <span class="score">20</span></p>
                 <p class="label-highscore">🏆 Highscore: <span class="highscore">0</span></p>

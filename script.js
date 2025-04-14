@@ -1,6 +1,6 @@
 'use strict';
 
-const numberDisplay = document.querySelector('.number');
+const numberDisplay = document.querySelector('.number-display');
 const guessInput = document.querySelector('.guess-input');
 const checkButton = document.querySelector('.btn--check');
 const messageDisplay = document.querySelector('.message');
@@ -56,8 +56,8 @@ const enableGameControls = (enabled) => {
 const initializeGame = () => {
     secretNumber = generateSecretNumber();
     currentScore = MAX_SCORE;
-
     updateScoreUI(currentScore);
+    highscoreDisplay.textContent = highscore;
     updateNumberDisplay('?');
     displayMessage('Start guessing...');
     updateBackground(false);
@@ -99,7 +99,6 @@ checkButton.addEventListener('click', handleGuess);
 guessInput.addEventListener('keypress', (event) => {
     if (event.key === 'Enter') {
         handleGuess();
-    } else if (!/[0-9]/.test(event.key) && event.key !== 'Backspace' && event.key !== 'Delete' && event.key !== 'ArrowLeft' && event.key !== 'ArrowRight' && event.key !== 'Tab') {
     }
 });
 
