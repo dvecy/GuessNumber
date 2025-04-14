@@ -1,81 +1,108 @@
-const secretNumber = document.querySelector(".number");
-const guess = document.querySelector(".guess");
-const checkBtn = document.querySelector(".check");
-const message = document.querySelector(".message");
-const score = document.querySelector(".score");
-const highScore = document.querySelector(".highscore");
-const againBtn = document.querySelector(".again");
+'use strict';
 
-let randomNumber = Math.trunc(Math.random() * 20) + 1;
-let currentScore = 20;
+const numberDisplay = document.querySelector('.number');
+const guessInput = document.querySelector('.guess-input');
+const checkButton = document.querySelector('.btn--check');
+const messageDisplay = document.querySelector('.message');
+const scoreDisplay = document.querySelector('.score');
+const highscoreDisplay = document.querySelector('.highscore');
+const againButton = document.querySelector('.btn--again');
+const bodyElement = document.body;
+
+const MAX_SCORE = 20;
+const MIN_NUMBER = 1;
+const MAX_NUMBER = 20;
+
+let secretNumber;
+let currentScore;
 let highscore = 0;
 
+const generateSecretNumber = () => Math.trunc(Math.random() * MAX_NUMBER) + MIN_NUMBER;
 
-function check() {
-    const guessValue = Number(guess.value);
-    if (!guessValue) {
-        message.textContent = "No number!";
-        message.classList.remove("correct", "wrong");
-    } else if (guessValue > randomNumber) {
-        if (currentScore > 1) {
-            message.textContent = "Too high!";
-            message.classList.add("wrong");
-            message.classList.remove("correct");
-            currentScore--;
-            score.textContent = currentScore;
-        } else {
-            message.textContent = "You lost the game!";
-            message.classList.add("wrong");
-            message.classList.remove("correct");
-            score.textContent = 0;
-        }
-    } else if (guessValue < randomNumber) {
-        if (currentScore > 1) {
-            message.textContent = "Too low!";
-            message.classList.add("wrong");
-            message.classList.remove("correct");
-            currentScore--;
-            score.textContent = currentScore;
-        } else {
-            message.textContent = "You lost the game!";
-            message.classList.add("wrong");
-            message.classList.remove("correct");
-            score.textContent = 0;
-        }
+const displayMessage = (message, type = 'normal') => {
+    messageDisplay.textContent = message;
+    messageDisplay.classList.remove('correct', 'wrong');
+    if (type === 'correct') {
+        messageDisplay.classList.add('correct');
+    } else if (type === 'wrong') {
+        messageDisplay.classList.add('wrong');
+    }
+};
+
+const updateScoreUI = (score) => {
+    scoreDisplay.textContent = score;
+};
+
+const updateNumberDisplay = (numberText) => {
+    numberDisplay.textContent = numberText;
+};
+
+const updateBackground = (isCorrect) => {
+    bodyElement.classList.toggle('correct', isCorrect);
+};
+
+const updateHighscore = () => {
+    if (currentScore > highscore) {
+        highscore = currentScore;
+        highscoreDisplay.textContent = highscore;
+    }
+};
+
+const enableGameControls = (enabled) => {
+    checkButton.disabled = !enabled;
+    guessInput.disabled = !enabled;
+};
+
+const initializeGame = () => {
+    secretNumber = generateSecretNumber();
+    currentScore = MAX_SCORE;
+
+    updateScoreUI(currentScore);
+    updateNumberDisplay('?');
+    displayMessage('Start guessing...');
+    updateBackground(false);
+    guessInput.value = '';
+    guessInput.focus();
+    enableGameControls(true);
+};
+
+const handleGuess = () => {
+    const guess = Number(guessInput.value);
+
+    if (!guess || guess < MIN_NUMBER || guess > MAX_NUMBER) {
+        displayMessage(`⛔ Enter a number between ${MIN_NUMBER} and ${MAX_NUMBER}!`, 'wrong');
+        return;
+    }
+
+    if (guess === secretNumber) {
+        displayMessage('🎉 Correct Number!', 'correct');
+        updateNumberDisplay(secretNumber);
+        updateBackground(true);
+        updateHighscore();
+        enableGameControls(false);
     } else {
-        message.textContent = "Correct number!";
-        message.classList.add("correct");
-        message.classList.remove("wrong");
-        document.body.style.backgroundColor = "#60b347";
-        secretNumber.textContent = randomNumber;
-
-        if (currentScore > highscore) {
-            highscore = currentScore;
-            highScore.textContent = highscore;
+        if (currentScore > 1) {
+            currentScore--;
+            updateScoreUI(currentScore);
+            const hint = guess > secretNumber ? '📈 Too high!' : '📉 Too low!';
+            displayMessage(hint, 'wrong');
+        } else {
+            displayMessage('💥 You lost the game!', 'wrong');
+            updateScoreUI(0);
+            enableGameControls(false);
         }
     }
+};
 
-}
+checkButton.addEventListener('click', handleGuess);
 
-
-checkBtn.addEventListener("click", function () {
-    check();
-});
-
-guess.addEventListener("keypress", function (event) {
-    if (event.key === "Enter") {
-        check();
+guessInput.addEventListener('keypress', (event) => {
+    if (event.key === 'Enter') {
+        handleGuess();
+    } else if (!/[0-9]/.test(event.key) && event.key !== 'Backspace' && event.key !== 'Delete' && event.key !== 'ArrowLeft' && event.key !== 'ArrowRight' && event.key !== 'Tab') {
     }
-})
-
-againBtn.addEventListener("click", function () {
-    currentScore = 20;
-    randomNumber = Math.trunc(Math.random() * 20) + 1;
-
-    message.textContent = "Start guessing...";
-    message.classList.remove("correct", "wrong");
-    score.textContent = currentScore;
-    secretNumber.textContent = "?";
-    guess.value = "";
-    document.body.style.backgroundColor = "#222";
 });
+
+againButton.addEventListener('click', initializeGame);
+
+initializeGame();

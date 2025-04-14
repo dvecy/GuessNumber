@@ -1,171 +1,260 @@
+:root {
+    --font-family-main: 'Press Start 2P', cursive;
+    --color-text: #ffffff;
+    --color-text-secondary: #cccccc;
+    --color-bg-container: rgba(25, 25, 25, 0.75);
+    --color-border: #eeeeee;
+    --color-accent-primary: #ffcc00;
+    --color-accent-secondary: #00ccff;
+    --color-correct: #50fa7b;
+    --color-wrong: #ff5555;
+    --color-btn-check: #50fa7b;
+    --color-btn-check-hover: #3ddc65;
+    --color-btn-again: #ff5555;
+    --color-btn-again-hover: #e03f3f;
+}
+
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
+html {
+    font-size: 62.5%;
+}
+
 body {
-    font-family: 'Arial', sans-serif;
-    color: #eee;
+    font-family: var(--font-family-main);
+    color: var(--color-text);
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
-    margin: 0;
+    min-height: 100vh;
     position: relative;
     overflow: hidden;
+    line-height: 1.5;
 }
 
-.gradient {
+.gradient-overlay {
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background: linear-gradient(334deg, #6b97f7, #7525e2, #f7137e);
-    background-size: 180% 180%;
-    animation: gradient-animation 6s ease infinite;
-    z-index: -1;
+    inset: 0;
+    background: linear-gradient(315deg, hsla(260, 80%, 55%, 1), hsla(190, 80%, 55%, 1), hsla(340, 90%, 55%, 1));
+    background-size: 250% 250%;
+    animation: gradient-animation 8s ease infinite;
+    z-index: -2;
 }
 
 @keyframes gradient-animation {
-    0% {
-        background-position: 0% 50%;
-    }
-    50% {
-        background-position: 100% 50%;
-    }
-    100% {
-        background-position: 0% 50%;
-    }
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
 }
 
-.game {
+.noise-overlay {
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 300 300' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.5' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+    opacity: 0.04;
+    z-index: -1;
+    pointer-events: none;
+}
+
+.game-container {
     text-align: center;
-    border: 2px solid #eee;
-    border-radius: 15px;
-    padding: 30px;
-    max-width: 600px;
-    width: 100%;
-    background-color: rgba(0, 0, 0, 0.7); /* Semi-transparent background */
-    backdrop-filter: blur(10px);
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
-    transition: transform 0.3s;
+    border: 3px solid var(--color-border);
+    border-radius: 10px;
+    padding: 3rem 4rem;
+    width: 90%;
+    max-width: 70rem;
+    background-color: var(--color-bg-container);
+    backdrop-filter: blur(8px);
+    box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.4);
     position: relative;
     z-index: 1;
 }
 
-.game:hover {
-    transform: scale(1.05);
+.game-header {
+    margin-bottom: 4rem;
 }
 
-header {
-    margin-bottom: 30px;
+h1 {
+    font-size: 3.5rem;
+    margin-bottom: 1rem;
+    text-shadow: 2px 2px var(--color-accent-secondary);
+}
+
+.between {
+    font-size: 1.4rem;
+    color: var(--color-text-secondary);
+    margin-bottom: 3rem;
+}
+
+.number-box {
+    border: 3px solid var(--color-border);
+    background-color: var(--color-border);
+    padding: 0.5rem;
+    display: inline-block;
+    margin: 0 auto 2rem auto;
+    transition: background-color 0.4s ease;
 }
 
 .number {
-    font-size: 6rem;
-    margin-top: 30px;
-    background-color: #eee;
-    color: blue;
-    width: 100px;
-    height: 100px;
-    border-radius: 50%;
+    font-size: 5rem;
+    background-color: #111;
+    color: var(--color-accent-primary);
+    width: 10rem;
+    padding: 2rem 0;
     display: flex;
     justify-content: center;
     align-items: center;
     margin: 0 auto;
-    transition: background-color 0.5s, transform 0.5s;
-    font-family: 'Press Start 2P', cursive; /* Tetris-like font */
+    transition: color 0.4s ease, transform 0.2s ease;
 }
 
-.between {
-    font-size: 1.2rem;
-    color: #bbb;
-    margin-bottom: 20px;
-    font-family: 'Press Start 2P', cursive; /* Tetris-like font */
+body.correct .number-box {
+    background-color: var(--color-correct);
+}
+body.correct .number {
+    color: #111;
+    transform: scale(1.1);
 }
 
-.btn {
-    background-color: #60b347;
-    border: none;
-    padding: 15px 30px;
-    font-size: 1.2rem;
-    color: #fff;
-    border-radius: 5px;
-    cursor: pointer;
-    margin-top: 20px;
-    transition: background-color 0.3s, transform 0.3s;
-    font-family: 'Press Start 2P', cursive; /* Tetris-like font */
+.game-main {
+    display: flex;
+    justify-content: space-around;
+    align-items: flex-start;
+    gap: 4rem;
+    margin-top: 2rem;
 }
 
-.btn:hover {
-    background-color: #45a029;
-    transform: scale(1.05);
-}
-
-.btn.again {
-    background-color: #f44336;
-    font-size: 0.8rem;
-    padding: 5px 10px;
-    position: absolute;
-    top: 10px;
-    left: 10px;
-}
-
-input.guess {
-    width: 80px;
-    padding: 10px;
-    font-size: 1.2rem;
-    margin-top: 20px;
-    text-align: center;
-    border: 2px solid #eee;
-    border-radius: 5px;
-    transition: border-color 0.3s, transform 0.3s;
-    font-family: 'Press Start 2P', cursive; /* Tetris-like font */
-}
-
-input.guess:focus {
-    border-color: #60b347;
-    transform: scale(1.05);
-}
-
-section {
-    margin: 30px 0;
-}
-
-.message {
-    font-size: 1.5rem;
-    margin: 30px 0;
-    transition: color 0.3s;
-    font-family: 'Press Start 2P', cursive; /* Tetris-like font */
-}
-
-.message.correct {
-    color: #60b347;
-}
-
-.message.wrong {
-    color: #f44336;
-}
-
-.score, .highscore {
-    font-size: 1.5rem;
-    color: #ffd700;
-    font-family: 'Press Start 2P', cursive; /* Tetris-like font */
-}
-
-.left, .right {
+.game-panel {
+    flex: 1;
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin-top: 20px;
 }
 
-.left {
-    margin-bottom: 20px;
+.guess-input {
+    width: 12rem;
+    padding: 1.5rem;
+    font-size: 3rem;
+    text-align: center;
+    border: 3px solid var(--color-border);
+    border-radius: 5px;
+    background-color: #eee;
+    color: #333;
+    font-family: var(--font-family-main);
+    margin-bottom: 2rem;
+    transition: border-color 0.3s, transform 0.2s;
+    outline: none;
 }
 
-input.guess, .btn.check {
-    margin-bottom: 10px;
+.guess-input:focus {
+    border-color: var(--color-accent-secondary);
+    transform: scale(1.05);
+}
+
+.guess-input::-webkit-outer-spin-button,
+.guess-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.guess-input[type=number] {
+  -moz-appearance: textfield;
+}
+
+.message {
+    font-size: 1.8rem;
+    min-height: 5.4rem;
+    margin-bottom: 2.5rem;
+    transition: color 0.3s ease;
+}
+
+.message.correct { color: var(--color-correct); }
+.message.wrong { color: var(--color-wrong); }
+
+.label-score,
+.label-highscore {
+    font-size: 1.6rem;
+    margin-bottom: 1rem;
+    color: var(--color-text-secondary);
+}
+
+.score,
+.highscore {
+    color: var(--color-accent-primary);
+    font-size: 1.8rem;
+}
+
+.btn {
+    border: none;
+    padding: 1.5rem 3rem;
+    font-size: 1.8rem;
+    color: #111;
+    border-radius: 5px;
+    cursor: pointer;
+    font-family: var(--font-family-main);
+    transition: background-color 0.2s ease, transform 0.1s ease;
+    text-transform: uppercase;
+    box-shadow: 0 4px 0 rgba(0, 0, 0, 0.3);
+}
+
+.btn:active {
+    transform: translateY(2px);
+    box-shadow: 0 2px 0 rgba(0, 0, 0, 0.3);
+}
+
+.btn--check {
+    background-color: var(--color-btn-check);
+}
+.btn--check:hover {
+    background-color: var(--color-btn-check-hover);
+}
+
+.btn--again {
+    position: absolute;
+    top: 1.5rem;
+    left: 1.5rem;
+    font-size: 1.3rem;
+    padding: 0.8rem 1.5rem;
+    background-color: var(--color-btn-again);
+    color: var(--color-text);
+}
+.btn--again:hover {
+    background-color: var(--color-btn-again-hover);
+}
+
+@media (max-width: 600px) {
+    html {
+        font-size: 50%;
+    }
+    .game-container {
+        padding: 2rem;
+        width: 95%;
+    }
+    .game-main {
+        flex-direction: column;
+        align-items: center;
+        gap: 3rem;
+    }
+    .game-panel--left {
+        order: 2;
+        margin-top: 2rem;
+    }
+     .game-panel--right {
+        order: 1;
+    }
+    h1 {
+        font-size: 2.8rem;
+    }
+     .number {
+        font-size: 4rem;
+        width: 8rem;
+        padding: 1.5rem 0;
+    }
+    .btn--again {
+        top: 1rem;
+        left: 1rem;
+    }
 }
